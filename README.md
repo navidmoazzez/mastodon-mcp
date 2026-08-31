@@ -81,7 +81,27 @@ The `login` step stores the token, so the MCP entry needs no environment variabl
 
 ### Claude Desktop
 
-`claude_desktop_config.json`:
+**1. Open the config file.**
+
+In Claude Desktop, go to **Settings**, then **Developer**, then click **Edit Config**. That reveals `claude_desktop_config.json` in your file manager. Open it in any text editor.
+
+If you would rather go straight there:
+
+| | |
+|---|---|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Linux | `~/.config/Claude/claude_desktop_config.json` |
+
+On macOS you can open it from a terminal with:
+
+```bash
+open -e ~/Library/Application\ Support/Claude/claude_desktop_config.json
+```
+
+**2. Add the server.**
+
+If the file is empty or does not exist, paste this whole thing in:
 
 ```json
 {
@@ -94,11 +114,46 @@ The `login` step stores the token, so the MCP entry needs no environment variabl
 }
 ```
 
-Run `npx -y @thenavidm/mastodon-mcp login <your-instance>` once first.
+If you already have other servers, add only the `"mastodon": {{ ... }}` part inside your existing `"mcpServers"`, and put a comma after the entry before it. The file has to stay valid JSON. A single missing comma or a trailing one stops every server from loading, not just this one.
 
-### Cursor, Windsurf, VS Code, Zed, Cline
+Run `npx -y @thenavidm/mastodon-mcp login <your-instance>` once before this, so the server has a session to use. [Section 3](#3-connect-your-account) covers it.
 
-Same JSON, in that client's MCP config file.
+**3. Restart properly.**
+
+Quit Claude Desktop completely and reopen it. On macOS closing the window is not enough, use **Cmd+Q**. On Windows quit it from the system tray. Claude only reads that file at startup.
+
+**4. Check it worked.**
+
+Look for the tools icon in the message box and click it. You should see `mastodon` with its tools listed. Then ask it something from [section 1](#1-what-you-can-ask-it).
+
+If nothing appears, Claude Desktop's own log is the fastest way in:
+
+| | |
+|---|---|
+| macOS | `~/Library/Logs/Claude/mcp-server-mastodon.log` |
+| Windows | `%APPDATA%\Claude\logs\mcp-server-mastodon.log` |
+
+```bash
+tail -n 50 ~/Library/Logs/Claude/mcp-server-mastodon.log
+```
+
+Two things account for most failures. Node is not installed, or not on the PATH that Claude Desktop sees, in which case use the full path to `node` as the `command`. Or the JSON is malformed, which you can check by pasting the file into any JSON validator.
+
+### Cursor
+
+Create `~/.cursor/mcp.json` for every project, or `.cursor/mcp.json` inside a single project. Use the same JSON as Claude Desktop. Then reload the window, or open **Settings**, **MCP**, and toggle the server.
+
+### Windsurf
+
+`~/.codeium/windsurf/mcp_config.json`, same JSON, then reload.
+
+### VS Code
+
+`.vscode/mcp.json` in a project, or run **MCP: Add Server** from the command palette.
+
+### Everything else
+
+Zed, Cline, Continue and anything else that speaks MCP over stdio all work. They each keep their config somewhere different, but they all want the same things: the `command`, the `args`, and the `env`.
 
 ### Docker
 
