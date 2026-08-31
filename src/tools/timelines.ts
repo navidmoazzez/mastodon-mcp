@@ -10,10 +10,9 @@
  *   hashtag   one tag, optionally restricted to your instance
  *   list      one curated list
  *
- * `the-focus-ai`'s server has home and public. `VitexSoftware`'s has four but no
- * list timeline. All of them stop at one page, because Mastodon paginates
- * through a `Link` header rather than a cursor in the body, so "the last 200
- * posts" silently returns 40.
+ * All of them page through a `Link` header rather than a cursor in the body,
+ * which is easy to miss: stop at one response and "the last 200 posts" silently
+ * returns 40.
  */
 
 import { z } from "zod";
@@ -193,8 +192,8 @@ const accountStatuses = defineTool({
  * `/api/v1/accounts/lookup` resolves a local or already-known remote handle
  * without touching the network. When that misses, a search with `resolve=true`
  * makes the instance go and fetch the remote account, which is the only way to
- * reach someone your instance has never seen. Both references skip the fallback,
- * so looking up an account on an obscure server just fails.
+ * reach someone your instance has never seen. Without the fallback, looking up
+ * an account on an obscure server just fails.
  */
 export async function resolveAccountId(
   ctx: { client: { call: Function; list: Function } },

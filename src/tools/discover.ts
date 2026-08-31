@@ -4,8 +4,7 @@
  * Mastodon has no algorithmic feed, so discovery is done by hand: hashtags,
  * trends, the profile directory, and curated lists. That makes these tools more
  * load-bearing here than on any other network, and it is why following a
- * *hashtag* is a first-class feature. Neither reference server exposes followed
- * hashtags or lists' timelines at all.
+ * *hashtag* is a first-class feature.
  *
  * One thing worth knowing about search: Mastodon does not full-text search
  * public statuses by default. Most instances only index your own posts and ones

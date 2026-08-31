@@ -4,9 +4,9 @@
  * Mastodon is federated, so an account is a **token plus an instance**. A token
  * issued by mastodon.social means nothing on fosstodon.org, which is why the
  * instance travels with the token rather than living in one global variable.
- * Both reference servers take a single instance from the environment, so running
- * a personal account and a project account on two different servers means
- * running two copies of the server.
+ * A single instance read from the environment means running a personal account
+ * and a project account on two different servers takes two copies of the
+ * server.
  *
  * Two sources, in priority order:
  *   1. MASTODON_ACCOUNTS  a JSON array, for several accounts across instances

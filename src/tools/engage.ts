@@ -1,10 +1,8 @@
 /**
  * Favouriting, boosting, bookmarking, pinning, voting, and undoing all of it.
  *
- * Every action has its inverse. `the-focus-ai`'s server has none of these at
- * all; `VitexSoftware`'s has the pairs but not pin, mute-conversation, vote or
- * translate. An agent that can add to your timeline but not take it back is an
- * agent you cannot leave alone with it.
+ * Every action has its inverse. An agent that can add to your timeline but not
+ * take it back is an agent you cannot leave alone with it.
  */
 
 import { z } from "zod";

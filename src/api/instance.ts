@@ -1,15 +1,13 @@
 /**
  * Per-instance limits, read once and cached.
  *
- * This is the thing every other Mastodon integration gets wrong. The character
- * limit is not 500. It is whatever the instance says it is:
+ * The character limit is not 500. It is whatever the instance says it is:
  *
  *   mastodon.social    500 characters,  4 media,  4 poll options
  *   infosec.exchange   11,000 characters, 4 media, 10 poll options
  *
  * Hardcoding 500 refuses a legal 2,000-character post on half the fediverse,
- * and hardcoding 4 poll options refuses a legal 6-option poll. Both reference
- * servers hardcode both.
+ * and hardcoding 4 poll options refuses a legal 6-option poll.
  *
  * `/api/v2/instance` is the modern endpoint. `/api/v1/instance` is the fallback
  * for servers that have not caught up, including most non-Mastodon software that

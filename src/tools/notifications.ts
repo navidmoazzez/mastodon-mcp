@@ -2,9 +2,9 @@
  * Notifications and lists.
  *
  * `mark_read` uses Mastodon's `markers` API, which stores a read position per
- * timeline and syncs it to every client you use. Neither reference server
- * touches it, so an agent asked to "deal with my mentions" reads the same twenty
- * every time it runs, and marking them read in the web app does nothing here.
+ * timeline and syncs it to every client you use. Without it, an agent asked to
+ * "deal with my mentions" reads the same twenty every time it runs, and marking
+ * them read in the web app does nothing here.
  */
 
 import { z } from "zod";

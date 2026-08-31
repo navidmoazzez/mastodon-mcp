@@ -1,11 +1,11 @@
 /**
  * Rendering statuses for a model to read.
  *
- * Both reference servers return raw API JSON. A single 40-status timeline page
- * is tens of thousands of tokens of account objects, emoji arrays, media
- * metadata and `application` blocks, and the model has to find the text inside
- * it. The tagged format below runs about a tenth the size and puts the text
- * where a model expects it.
+ * Raw API JSON is enormous. A single 40-status timeline page is tens of
+ * thousands of tokens of account objects, emoji arrays, media metadata and
+ * `application` blocks, and the model has to find the text inside it. The
+ * tagged format below runs about a tenth the size and puts the text where a
+ * model expects it.
  *
  * Rules that matter:
  *
@@ -181,9 +181,8 @@ export function renderStatuses(
  * A conversation: ancestors, the requested status, then descendants.
  *
  * Mastodon's `/context` returns two flat arrays rather than a tree, so the
- * nesting has to be rebuilt from `in_reply_to_id`. Both reference servers hand
- * the two arrays over unshaped, which leaves the model to work out who replied
- * to whom.
+ * nesting has to be rebuilt from `in_reply_to_id`. Handing the two arrays over
+ * unshaped leaves the model to work out who replied to whom.
  */
 export function renderContext(status: Any, context: Any): string {
   const ancestors: Any[] = context?.ancestors ?? [];

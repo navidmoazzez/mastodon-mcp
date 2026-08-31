@@ -1,12 +1,6 @@
 /**
  * Decides whether a write is allowed to reach Mastodon.
  *
- * The two reference servers take opposite positions and neither is right.
- * berlinbra's ships no writes at all and calls that safety, which just moves
- * the work back to the human. brianellin's ships `create-post`, `like-post` and
- * `follow-user` completely unguarded, so a model that misreads "clean up my
- * feed" posts publicly on the first try.
- *
  * The hazard here is specific and worth naming. A post is public the instant it
  * lands, and deleting it does not pull it out of the feeds, caches and clients
  * that already have it. An unsend does not exist. A delete is likewise final.

@@ -2,9 +2,9 @@
  * Measuring and escaping text.
  *
  * Mastodon's character limit is **per instance**, not a constant. mastodon.social
- * allows 500; infosec.exchange allows 11,000. Every existing Mastodon MCP server
- * hardcodes 500, which silently refuses a legal 2,000-character post on half the
- * fediverse. The limit is read from the instance and cached, see `api/instance.ts`.
+ * allows 500; infosec.exchange allows 11,000. Hardcoding 500 silently refuses a
+ * legal 2,000-character post on half the fediverse, so the limit is read from
+ * the instance and cached. See `api/instance.ts`.
  *
  * What Mastodon counts is also not what `String.length` counts: a URL counts as
  * 23 characters no matter how long it is, and a remote mention counts only the
@@ -42,7 +42,7 @@ const MENTION_RE = /(^|[^\w/])@([a-z0-9_]+)@[a-z0-9.-]+\b/gi;
  *
  * Not `text.length`. Links weigh 23 whatever their length, and the domain half
  * of a remote mention is free. Both rules come from Mastodon's own
- * `CharacterCounter`, and neither reference server implements either.
+ * `CharacterCounter`.
  */
 export function countCharacters(text: string): number {
   if (!text) return 0;

@@ -39,9 +39,8 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 | 10 | [How it works](#10-how-it-works) | Architecture |
 | 11 | [Your data](#11-your-data) | What is stored and where |
 | 12 | [Risks](#12-risks) | Read this before you install |
-| 13 | [Compared to the alternatives](#13-compared-to-the-alternatives) | The other two servers |
-| 14 | [Troubleshooting](#14-troubleshooting) | When something breaks |
-| 15 | [Build from source](#15-build-from-source) | Contributing |
+| 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
+| 14 | [Build from source](#14-build-from-source) | Contributing |
 
 ---
 
@@ -58,7 +57,7 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 - What's trending on my instance, as opposed to on mastodon.social?
 - Turn these notes into a thread. My instance allows 11,000 characters, so check before you split it.
 
-The second one is the point. Mastodon lets you edit a published post and keeps a public revision history, so the post keeps its boosts, replies and favourites. Neither other Mastodon MCP server exposes that, so through them the only way to fix a typo is to delete and repost.
+The second one is the point. Mastodon lets you edit a published post and keeps a public revision history, so the post keeps its boosts, replies and favourites. Deleting and reposting throws all of that away, so `edit_status` is almost always the right move.
 
 ---
 
@@ -68,7 +67,7 @@ Node 20 or newer. Nothing else.
 
 > Not released to npm yet. The `npx` commands below work once `v1.0.0` is
 > published. Until then, install from source with
-> [section 15](#15-build-from-source) and point your client at
+> [section 14](#14-build-from-source) and point your client at
 > `node /path/to/mastodon-mcp/dist/index.js`.
 
 ### Claude Code
@@ -185,7 +184,7 @@ export MASTODON_ACCESS_TOKEN=…
 
 ## 4. Several accounts
 
-Mastodon is federated, so an account is a **token plus an instance**. The same username on two servers is two different people. Running a personal account and a project account, often on different instances, is the normal case here rather than the exotic one, and neither other Mastodon MCP server supports it at all.
+Mastodon is federated, so an account is a **token plus an instance**. The same username on two servers is two different people. Running a personal account and a project account, often on different instances, is the normal case here rather than the exotic one.
 
 Run `login` once per account:
 
@@ -459,7 +458,7 @@ Timelines, threads and search results come back as tagged text rather than raw A
 - A boost **wraps** the original rather than flattening it, so who said what is never ambiguous.
 - `content_warning` is an attribute, so you can see a warning was set without the body being hidden from you.
 - `<media>` carries `missing_alt="true"` when there is no description, worth flagging before boosting something.
-- **Link targets come from the underlying `href`.** Mastodon deliberately truncates the visible text of a long link, so the displayed text is not followable. Stripping the HTML, which is what both other servers effectively do, throws the real URL away.
+- **Link targets come from the underlying `href`.** Mastodon deliberately truncates the visible text of a long link, so the displayed text is not followable. Stripping the HTML throws the real URL away.
 - Mentions are rebuilt into full `@user@instance` handles. The raw markup carries only `@alice`, so a local alice and a remote alice are otherwise indistinguishable.
 - `next_max_id` continues the listing.
 
@@ -552,45 +551,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 
 ---
 
-## 13. Compared to the alternatives
-
-Two other Mastodon MCP servers exist. Both were read in full from source before this was written; the detailed comparison, with line references, is in [docs/reference-audit.md](docs/reference-audit.md).
-
-| | [the-focus-ai](https://github.com/the-focus-ai/mastodon-mcp) | [VitexSoftware](https://github.com/VitexSoftware/mastodon-mcp-server) | this |
-|---|:---:|:---:|:---:|
-| Tools | 4 | 63 | 76 |
-| Language | TypeScript | Python | TypeScript |
-| Structured output | – | – | ✅ |
-| HTML converted, links kept whole | – | – | ✅ |
-| Per-instance character limit | – | – | ✅ |
-| URL and mention weighting | – | – | ✅ |
-| **Edit a published status** | – | – | ✅ |
-| Status source and history | – | – | ✅ |
-| Pagination past one page | – | – | ✅ |
-| Media by URL | ✗ local file only | ✅ | ✅ |
-| Wait for media processing | – | – | ✅ |
-| Threads posted as a unit | – | – | ✅ |
-| Followed hashtags | – | – | ✅ |
-| Conversations (DMs) | – | – | ✅ |
-| Read markers | – | – | ✅ |
-| Announcements, reports, endorsements | – | – | ✅ |
-| Domain blocks | – | – | ✅ |
-| Several accounts and instances | – | – | ✅ |
-| One-command app registration | – | – | ✅ |
-| Scope checking | – | – | ✅ |
-| Read-only mode | – | ✅ | ✅ |
-| Confirmation on public writes | – | – | ✅ |
-| Tests | – | – | 50 |
-
-`✗` means present but wrong; `–` means absent.
-
-The short version. `the-focus-ai/mastodon-mcp` is a four-tool client that can only attach media from a local file path and defaults to the author's own instance, with a 1Password path from the author's own vault as a credential fallback. `VitexSoftware/mastodon-mcp-server` is a broad and careful wrapper, and the Debian packaging is more care than this kind of project usually gets, but every tool returns `json.dumps`, no listing goes past one page, and it cannot edit a post or mark a notification read.
-
-Neither reads the instance's own limits, converts a status body from HTML, or handles more than one account.
-
----
-
-## 14. Troubleshooting
+## 13. Troubleshooting
 
 **`mastodon-mcp doctor`** first. It names the failing step and the fix.
 
@@ -609,7 +570,7 @@ Neither reads the instance's own limits, converts a status body from HTML, or ha
 
 ---
 
-## 15. Build from source
+## 14. Build from source
 
 ```bash
 git clone https://github.com/thenavidm/mastodon-mcp.git
@@ -683,4 +644,10 @@ Navid Moazzez is a leading AI business strategist and the host of the [AI Creato
 
 ## License
 
-MIT
+[MIT](./LICENSE). Free to use, modify, and share.
+
+Not affiliated with, endorsed by, or connected to Mastodon gGmbH.
+
+---
+
+© 2026 NM Media. Made with ❤️ by [Navid Moazzez](https://navid.me).

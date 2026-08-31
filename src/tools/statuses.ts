@@ -1,12 +1,11 @@
 /**
  * Posting, editing, and reading a thread.
  *
- * `edit_status` is the tool that carries the most difference from the reference
- * servers. Mastodon is the only network in this family that lets you edit a
- * published post, keeping a public revision history rather than replacing it
- * silently. Neither reference server exposes it, so the only way to fix a typo
- * through them is to delete and repost, which throws away every boost, reply
- * and favourite the post had. That is a real cost paid for a missing endpoint.
+ * `edit_status` matters more here than the equivalent would anywhere else.
+ * Mastodon is the only network in this family that lets you edit a published
+ * post, keeping a public revision history rather than replacing it silently.
+ * Without it the only way to fix a typo is to delete and repost, which throws
+ * away every boost, reply and favourite the post had.
  *
  * `post_thread` exists because a character limit means threads are the normal
  * way to say anything long, and building one by hand is one tool call per part

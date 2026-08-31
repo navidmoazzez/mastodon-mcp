@@ -5,8 +5,7 @@
  * and the useful part is usually the status. 401 means the token is wrong or was
  * revoked. 403 more often means the token is missing a **scope** than that the
  * action is forbidden, and that distinction is the difference between "sign in
- * again" and "you cannot do this". Both reference servers surface a bare string
- * for all of it.
+ * again" and "you cannot do this", so a bare error string is not enough.
  *
  * 429 is worth its own class here because Mastodon sends real
  * `X-RateLimit-Remaining` and `X-RateLimit-Reset` headers, unlike most APIs,

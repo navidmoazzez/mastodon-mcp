@@ -7,9 +7,9 @@
  * image the instance accepts the file and processes it asynchronously, and the
  * attachment has no `url` until it finishes. Posting a status that references an
  * unprocessed id fails with a 422 that does not say why. So: poll
- * `/api/v1/media/:id` until the url appears. `the-focus-ai`'s server does not
- * poll, so a video attached there fails intermittently depending on how fast the
- * instance happens to be.
+ * `/api/v1/media/:id` until the url appears. Without the poll, a video
+ * attachment fails intermittently depending on how fast the instance happens to
+ * be that day.
  *
  * **Size limits are per instance**, like everything else. They come from
  * `/api/v2/instance`, so a file is refused locally with the real number rather
@@ -29,8 +29,8 @@ export type Fetched = { bytes: Uint8Array; contentType: string; filename: string
  *
  * A `data:` URI is accepted because a model that just generated an image has
  * bytes, not a URL, and making it find somewhere to host them first is a
- * pointless detour. `the-focus-ai`'s server takes only a local filesystem path,
- * which a remotely-hosted MCP server cannot use at all.
+ * pointless detour. A local filesystem path would not work at all for a
+ * remotely-hosted MCP server.
  */
 export async function fetchMedia(source: string, timeoutMs = 60_000): Promise<Fetched> {
   const trimmed = source.trim();
@@ -103,9 +103,8 @@ export type Attachment = { url: string; description?: string; focus?: string };
  * Upload one attachment and wait for the instance to finish processing it.
  *
  * `focus` is a `x,y` pair between -1 and 1 marking the visual centre, which is
- * what Mastodon crops thumbnails around. Neither reference server exposes it,
- * and without it a portrait photo of a person is routinely cropped to their
- * chest in the timeline.
+ * what Mastodon crops thumbnails around. Without it, a portrait photo of a
+ * person is routinely cropped to their chest in the timeline.
  */
 export async function uploadMedia(
   client: MastodonClient,

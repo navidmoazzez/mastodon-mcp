@@ -3,8 +3,7 @@
  *
  * `get_account` returns the relationship alongside the profile in one call,
  * because the question before any graph action is always "do I already follow
- * them, and have they blocked me", and that is a second endpoint both reference
- * servers make you call separately.
+ * them, and have they blocked me", which is otherwise a second round trip.
  */
 
 import { z } from "zod";

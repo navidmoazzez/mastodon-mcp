@@ -1,12 +1,12 @@
 /**
  * The REST client.
  *
- * Three things here that neither reference server does.
+ * Three things worth knowing.
  *
  * **Link-header pagination.** Mastodon does not return a cursor in the body. It
  * returns a `Link:` header with `rel="next"` carrying a `max_id`, and the only
- * reliable way to page is to follow it. Both references take a `limit` and stop
- * at whatever one page returned, so "my last 200 posts" silently returns 40.
+ * reliable way to page is to follow it. Take a `limit` and stop at whatever one
+ * page returned, and "my last 200 posts" silently returns 40.
  *
  * **Per-instance configuration.** Character limits, media counts and poll sizes
  * are per instance, not constants. See `instance.ts`.

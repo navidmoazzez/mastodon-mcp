@@ -10,12 +10,10 @@
  *     <span class="h-card"><a href="https://m.example/@alice" class="u-url mention"
  *       >@<span>alice</span></a></span></p>
  *
- * Both reference servers hand that to the model as-is, or strip every tag with a
- * regex. Stripping is worse than it looks: the visible text of a link is
- * deliberately truncated by those `invisible` and `ellipsis` spans, so a stripped
- * status says `navid.me/x/ver` and the real URL is gone. A model that follows it
- * gets a 404. This is the same failure as posting a Bluesky link without a facet,
- * arriving from the opposite direction.
+ * Handing that to a model as-is is unreadable, and stripping every tag with a
+ * regex is worse than it looks: the visible text of a link is deliberately
+ * truncated by those `invisible` and `ellipsis` spans, so a stripped status says
+ * `navid.me/x/ver` and the real URL is gone. A model that follows it gets a 404.
  *
  * So: convert to markdown, take link targets from `href` rather than from the
  * visible text, and rebuild mentions as full `@user@instance` handles.
