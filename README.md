@@ -40,7 +40,7 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 | 11 | [Your data](#11-your-data) | What is stored and where |
 | 12 | [Risks](#12-risks) | Read this before you install |
 | 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
-| 14 | [Build from source](#14-build-from-source) | Contributing |
+| 14 | [Build from source](#14-build-from-source) | Run it from a checkout |
 
 ---
 
@@ -643,8 +643,6 @@ npm run typecheck   # tsc --noEmit
 npm run dev         # tsc --watch
 npm test            # vitest, 50 tests
 ```
-
-Pull requests welcome. A change to the HTML conversion, the character counting or the output format needs a test.
 
 ---
 
