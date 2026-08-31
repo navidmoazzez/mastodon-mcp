@@ -1,0 +1,59 @@
+{
+  "name": "@thenavidm/mastodon-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for Mastodon and the fediverse. 60 tools for posting, editing, threads, five timelines, hashtags, lists, notifications and the social graph, with LLM-optimised output. One-command app registration. Works with Claude Code, Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "mastodon-mcp": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "MIT",
+  "author": "Navid Moazzez <https://navid.me>",
+  "homepage": "https://navid.me",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thenavidm/mastodon-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/thenavidm/mastodon-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mastodon",
+    "fediverse",
+    "activitypub",
+    "mcp-server",
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "llm-tools"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "SKILL.md",
+    "LICENSE"
+  ]
+}
