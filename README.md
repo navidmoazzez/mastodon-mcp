@@ -195,6 +195,32 @@ mastodon-mcp login mastodon.social
 
 That is the whole setup. It opens your browser, you approve, and it stores the token.
 
+### Have an agent do it
+
+Paste this into Claude Code, Cursor, or any agent with terminal access:
+
+```
+Set up the Mastodon MCP server for me.
+
+1. Ask me which instance my account is on, e.g. mastodon.social. Do not guess.
+2. Run: npx -y @thenavidm/mastodon-mcp login <instance>
+   It opens my browser and waits. Tell me to approve the request there, and
+   wait for it to finish. It asks for read, write and follow; that is correct.
+   If there is no browser available, re-run it with --oob and I will paste the
+   code back to you.
+3. Register the server with my MCP client. For Claude Code that is:
+     claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp
+   No environment variables: step 2 already stored the token.
+4. Run: npx -y @thenavidm/mastodon-mcp doctor
+   Show me the output. Pay attention to the line about scopes: if it says the
+   account cannot post, the token is read-only and step 2 needs redoing.
+5. Tell me to restart the client. Do not post anything.
+
+If I have more than one account, repeat step 2 per account and per instance.
+```
+
+It stops and waits at step 2, because only you can approve in the browser.
+
 ### Why this is one command and not five
 
 Mastodon has no central developer portal. Every instance is its own OAuth provider, so before you can get a token you have to register an application **on that instance**. The usual instructions are "go to Preferences, Development, New application, tick these scopes, save, copy the access token", and people get it wrong in the same two places every time: they miss the `write` scope, or they copy the client secret instead of the access token.
@@ -209,6 +235,14 @@ Mastodon has no central developer portal. Every instance is its own OAuth provid
 6. writes it to `~/.mastodon-mcp/accounts.json`, mode 0600
 
 `push` is deliberately not requested. Nothing here subscribes to push notifications, and asking for a permission you never use makes the token more dangerous than the tool.
+
+### Check it worked
+
+```bash
+mastodon-mcp doctor
+```
+
+It reports your instance's real limits, verifies the token, and checks **the granted scopes**. That last one is the failure everything else hides: a read-only token passes every other check and then fails on the first post with a 403 that never mentions scopes.
 
 ### If you have no browser
 
@@ -230,6 +264,8 @@ Or skip the store entirely:
 export MASTODON_URL=https://mastodon.social
 export MASTODON_ACCESS_TOKEN=…
 ```
+
+If you make the app yourself, tick **read**, **write** and **follow**, and copy **"Your access token"**, not the client secret.
 
 ### Revoking
 
