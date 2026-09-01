@@ -7,11 +7,13 @@
 
 Mastodon MCP server for Claude Code and AI agents. Statuses, threads, boosts, timelines, search, lists, notifications and following, across any instance.
 
-Give any AI agent full control of your Mastodon account. Post, edit, run threads, read five different timelines, follow hashtags, manage lists, and work your notifications, from Claude, Cursor, or any MCP client.
+Setup is one command. Mastodon has no central developer portal, so this registers its own application on your instance and signs you in.
 
-76 tools. Setup is one command: Mastodon has no developer portal, so this registers its own application on your instance and signs you in.
+Instance limits are read from the instance, so character counts and poll options are correct wherever you are.
 
-Built by [Navid Moazzez](https://navid.me).
+76 tools, across as many instances as you like.
+
+Built and maintained by [Navid Moazzez](https://navid.me).
 
 ```
 You: anything in my mentions that actually needs an answer?
