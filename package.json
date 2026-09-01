@@ -1,7 +1,7 @@
 {
   "name": "@thenavidm/mastodon-mcp",
   "version": "1.0.0",
-  "description": "MCP server for Mastodon and the fediverse. 60 tools for posting, editing, threads, five timelines, hashtags, lists, notifications and the social graph, with LLM-optimised output. One-command app registration. Works with Claude Code, Claude Desktop, Cursor, Windsurf, and any MCP-compatible client.",
+  "description": "Mastodon MCP server for Claude Code and AI agents. 60 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {

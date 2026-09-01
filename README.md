@@ -1,7 +1,7 @@
 # Mastodon MCP
 
 [![npm](https://img.shields.io/npm/v/@thenavidm/mastodon-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/mastodon-mcp)
-[![Licence](https://img.shields.io/badge/licence-MIT-green)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
 
@@ -840,7 +840,7 @@ Navid Moazzez is a leading AI business strategist, and the host of the AI Creato
 
 ## Dependencies
 
-| Library | Licence | What it does |
+| Library | License | What it does |
 |---|---|---|
 | [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk) | MIT | The MCP server and transports |
 | [zod](https://github.com/colinhacks/zod) | MIT | Tool argument schemas and validation |
