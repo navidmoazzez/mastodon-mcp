@@ -1,5 +1,12 @@
 # Mastodon MCP
 
+[![npm](https://img.shields.io/npm/v/@thenavidm/mastodon-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/mastodon-mcp)
+[![Licence](https://img.shields.io/badge/licence-MIT-green)](./LICENSE)
+[![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
+[![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
+
+Mastodon MCP server for Claude Code and AI agents. Statuses, threads, boosts, timelines, search, lists, notifications and following, across any instance.
+
 Give any AI agent full control of your Mastodon account. Post, edit, run threads, read five different timelines, follow hashtags, manage lists, and work your notifications, from Claude, Cursor, or any MCP client.
 
 76 tools. Setup is one command: Mastodon has no developer portal, so this registers its own application on your instance and signs you in.
@@ -40,7 +47,6 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 | 11 | [Your data](#11-your-data) | What is stored and where |
 | 12 | [Risks](#12-risks) | Read this before you install |
 | 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
-| 14 | [Build from source](#14-build-from-source) | Run it from a checkout |
 
 ---
 
@@ -661,24 +667,6 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 
 ---
 
-## 14. Build from source
-
-```bash
-git clone https://github.com/navidmoazzez/mastodon-mcp.git
-cd mastodon-mcp
-npm install
-npm run build
-npm test
-node dist/index.js login your-instance.social
-```
-
-Then point your client at `node /absolute/path/to/mastodon-mcp/dist/index.js`.
-
-```bash
-npm run typecheck   # tsc --noEmit
-npm run dev         # tsc --watch
-npm test            # vitest, 50 tests
-```
 
 ---
 
@@ -705,6 +693,10 @@ npm test            # vitest, 50 tests
 ## Versions
 
 See [VERSIONS.md](VERSIONS.md).
+
+## Questions
+
+Run into a problem or have a question? [Open an issue](https://github.com/navidmoazzez/mastodon-mcp/issues) and I will help.
 
 ## About the author
 
