@@ -53,8 +53,6 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 | 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
 | 14 | [FAQ](#14-faq-) | Including what an MCP server is |
 
----
-
 ## 1. What you can ask it
 
 - Post this, and put a content warning on it.
@@ -69,8 +67,6 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 - Turn these notes into a thread. My instance allows 11,000 characters, so check before you split it.
 
 The second one is the point. Mastodon lets you edit a published post and keeps a public revision history, so the post keeps its boosts, replies and favourites. Deleting and reposting throws all of that away, so `edit_status` is almost always the right move.
-
----
 
 ## 2. Install
 
@@ -196,8 +192,6 @@ mastodon-mcp doctor
 
 It checks the instance, the token, and **the token's scopes**, which is the failure people actually hit: a read-only token passes every other check and then fails on the first post with a 403 that never mentions scopes.
 
----
-
 ## 3. Connect your account
 
 ```bash
@@ -282,8 +276,6 @@ If you make the app yourself, tick **read**, **write** and **follow**, and copy 
 
 `https://your-instance/oauth/authorized_applications`. Removing it there kills the token immediately. `mastodon-mcp logout <handle>` only forgets it locally.
 
----
-
 ## 4. Several accounts
 
 Mastodon is federated, so an account is a **token plus an instance**. The same username on two servers is two different people. Running a personal account and a project account, often on different instances, is the normal case here rather than the exotic one.
@@ -337,8 +329,6 @@ export MASTODON_ACCOUNTS='[
 ```
 
 `handle` is optional; it is only used for matching, and `whoami` will tell you the real one.
-
----
 
 ## 5. Tools
 
@@ -451,8 +441,6 @@ Three resources: `mastodon://accounts`, `mastodon://concepts`, `mastodon://outpu
 
 Three prompts: **catch-up**, **draft-thread**, **find-my-people**.
 
----
-
 ## 6. Writing safely
 
 A status is public the instant it lands, and federation means deleting it does not pull it back off the instances that already have it.
@@ -478,8 +466,6 @@ The audit log is one JSON line per attempted write, allowed and blocked alike, w
 ### Prompt injection
 
 Everything from a timeline, a search, a notification or a conversation is text other people wrote, and on an open federated network literally anyone can put text in front of you. The server tells the model to treat all of it as data. Do not rely on that alone: `MASTODON_READ_ONLY=1` for an agent working through someone else's content is the real defence.
-
----
 
 ## 7. Writing statuses
 
@@ -534,8 +520,6 @@ Mastodon keeps a public revision history and the post keeps its boosts, replies 
 
 Call `get_status_source` first. The rendered content is HTML with links rewritten; editing that back would mangle every link in the post.
 
----
-
 ## 8. Reading statuses
 
 Timelines, threads and search results come back as tagged text rather than raw API JSON. Measured on five real trending statuses from mastodon.social: 3,815 characters instead of 26,439, about 950 tokens instead of 6,600.
@@ -564,8 +548,6 @@ Timelines, threads and search results come back as tagged text rather than raw A
 - Mentions are rebuilt into full `@user@instance` handles. The raw markup carries only `@alice`, so a local alice and a remote alice are otherwise indistinguishable.
 - `next_max_id` continues the listing.
 
----
-
 ## 9. What makes Mastodon different
 
 Worth knowing before you point an agent at it.
@@ -581,8 +563,6 @@ Worth knowing before you point an agent at it.
 **Boosts, not quotes.** There is no native quote post. To comment on something, post a status containing its URL.
 
 **Not everything is Mastodon.** Pleroma, Akkoma, GoToSocial and others speak the same API. `get_instance_info` reports the software, and `doctor` warns you when features like editing or trends may be missing.
-
----
 
 ## 10. How it works
 
@@ -622,8 +602,6 @@ Two dependencies: the MCP SDK and zod. No Mastodon client library: the API is pl
 
 **Rate limits.** Mastodon sends real `X-RateLimit-Remaining` and an ISO `X-RateLimit-Reset`, which is more than most APIs give you. Retries wait for the actual reset rather than guessing.
 
----
-
 ## 11. Your data
 
 Nothing is uploaded anywhere but your instance.
@@ -637,8 +615,6 @@ Nothing is uploaded anywhere but your instance.
 
 No telemetry, no analytics, no phone-home. The only hosts contacted are the instances you configured, plus whatever URL you hand to `media[].url`.
 
----
-
 ## 12. Risks
 
 - **An access token reaches your whole account.** It can post, delete, follow and block as you. Revoke it at `https://your-instance/oauth/authorized_applications`.
@@ -650,8 +626,6 @@ No telemetry, no analytics, no phone-home. The only hosts contacted are the inst
 - **Rate limits are real.** A bulk unfollow of a thousand accounts will hit them.
 
 If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gives you 39 tools that cannot change anything.
-
----
 
 ## 13. Troubleshooting
 
@@ -669,11 +643,6 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 | Media upload times out | Large video. The id stays valid; retry the post with `media_ids` |
 | "will not run without confirm: true" | Working as intended. See [section 6](#6-writing-safely) |
 | Edits, polls or trends missing | Not a Mastodon server. `get_instance_info` reports the software |
-
----
-
-
----
 
 ## Environment variables
 
@@ -698,8 +667,6 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 ## Versions
 
 See [VERSIONS.md](VERSIONS.md).
-
----
 
 ## 14. FAQ ❓
 
@@ -822,7 +789,6 @@ Revoke the application in your instance's settings under Development, which cuts
 access immediately, then remove the server from your client's config.
 
 </details>
-
 
 ## Questions
 
