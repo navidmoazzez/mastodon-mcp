@@ -33,10 +33,10 @@
   "homepage": "https://navid.me",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thenavidm/mastodon-mcp.git"
+    "url": "git+https://github.com/navidmoazzez/mastodon-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/thenavidm/mastodon-mcp/issues"
+    "url": "https://github.com/navidmoazzez/mastodon-mcp/issues"
   },
   "keywords": [
     "mcp",

@@ -51,7 +51,7 @@ Options:
   MASTODON_AUDIT_LOG                 append-only log of every attempted write
   MASTODON_HTTP_PORT / _HOST / _TOKEN  for --http
 
-https://github.com/thenavidm/mastodon-mcp
+https://github.com/navidmoazzez/mastodon-mcp
 `;
 
 async function main(): Promise<void> {

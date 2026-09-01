@@ -45,7 +45,7 @@ async function registerApp(instance: string, redirectUri: string): Promise<AppCr
     client_name: "mastodon-mcp",
     redirect_uris: redirectUri,
     scopes: SCOPES,
-    website: "https://github.com/thenavidm/mastodon-mcp",
+    website: "https://github.com/navidmoazzez/mastodon-mcp",
   });
   const response = await fetch(`${instance}/api/v1/apps`, { method: "POST", body });
   const text = await response.text();

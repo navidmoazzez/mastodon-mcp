@@ -664,7 +664,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 ## 14. Build from source
 
 ```bash
-git clone https://github.com/thenavidm/mastodon-mcp.git
+git clone https://github.com/navidmoazzez/mastodon-mcp.git
 cd mastodon-mcp
 npm install
 npm run build
