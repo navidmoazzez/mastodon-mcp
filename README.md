@@ -1,3 +1,5 @@
+<img src="https://cdn.navid.media/connectors/mastodon-icon.png" alt="Mastodon" width="88">
+
 # Mastodon MCP
 
 [![npm](https://img.shields.io/npm/v/@thenavidm/mastodon-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/mastodon-mcp)
