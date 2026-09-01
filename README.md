@@ -47,6 +47,7 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 | 11 | [Your data](#11-your-data) | What is stored and where |
 | 12 | [Risks](#12-risks) | Read this before you install |
 | 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
+| 14 | [FAQ](#14-faq-) | Including what an MCP server is |
 
 ---
 
@@ -693,6 +694,131 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 ## Versions
 
 See [VERSIONS.md](VERSIONS.md).
+
+---
+
+## 14. FAQ ❓
+
+<details>
+<summary><b>What is an MCP server?</b></summary>
+
+An MCP server is a standard way to give an AI assistant real access to a tool,
+so it can act rather than guess. You install it once, your assistant gains the
+tools, and it works in Claude, Cursor, ChatGPT and anything else that speaks the
+protocol. You never call the tools yourself, you ask in plain language.
+
+</details>
+
+<details>
+<summary><b>What is Mastodon?</b></summary>
+
+Mastodon is social networking software that anyone can run. Each installation is
+called an instance, it holds its own accounts and rules, and instances talk to
+each other, so an account on one can follow an account on another. There is no
+single company in the middle, which is why the setup below asks which instance
+you are on.
+
+</details>
+
+<details>
+<summary><b>Do I need to register a developer app?</b></summary>
+
+You do not have to do it by hand. Mastodon has no central developer portal
+because every instance is its own OAuth provider, so an app has to be registered
+on your instance specifically. Registering is an unauthenticated call, so
+`login` does the whole thing for you: it registers the application, opens your
+browser, catches the redirect and stores the token.
+
+Doing it manually is five steps in Settings then Development, and people get it
+wrong in the same two places every time: they miss the write scope, or they
+paste the client secret instead of the access token.
+
+</details>
+
+<details>
+<summary><b>What permissions does it ask for?</b></summary>
+
+It requests `read write follow`. Read covers timelines, search and
+notifications, write covers posting and editing, and follow covers the social
+graph. You can see and revoke the application at any time in your instance's
+settings under Development.
+
+</details>
+
+<details>
+<summary><b>Is my data sent anywhere? Who can see it?</b></summary>
+
+Nothing leaves your machine except calls to the instances you configured. There
+is no backend here, no account to create and no telemetry. Your token sits in
+your client's config and the audit log sits in your data directory.
+
+</details>
+
+<details>
+<summary><b>Can it post without me asking?</b></summary>
+
+It posts when you ask it to. Posting, threads, deleting, blocking and reporting
+all require the model to pass `confirm: true`, which it sets after reading a
+description explaining what cannot be undone.
+
+Setting `MASTODON_READ_ONLY=1` removes every write tool from the list entirely,
+so the model cannot see or call them.
+
+</details>
+
+<details>
+<summary><b>Can it delete something by accident?</b></summary>
+
+Deleting needs `confirm: true`. Worth knowing that a delete does not reach the
+copies already federated to other instances, so a post that travelled will
+survive in places you cannot reach. Favourites, boosts and follows are not
+guarded, because each is one click to undo.
+
+</details>
+
+<details>
+<summary><b>Does it work on any instance?</b></summary>
+
+It works on any instance running the Mastodon API, and on the compatible
+implementations that speak it. Limits differ per instance, so character counts,
+poll options and media counts are read from the instance itself rather than
+assumed.
+
+</details>
+
+<details>
+<summary><b>Does it cost anything?</b></summary>
+
+It costs nothing. The server is MIT licensed and Mastodon's API is free. Your
+instance may have its own rate limits, which the server respects.
+
+</details>
+
+<details>
+<summary><b>Does it work with ChatGPT and Cursor, or only Claude?</b></summary>
+
+It works with any MCP client. Claude Code, Claude Desktop, Cursor, Windsurf, VS
+Code, Codex CLI and Gemini CLI all run it the same way.
+
+</details>
+
+<details>
+<summary><b>Can I connect more than one account?</b></summary>
+
+You can connect as many as you like, including accounts on different instances
+at the same time. Every tool takes an optional account argument, and a
+preference order decides which is used when you leave it out.
+
+</details>
+
+<details>
+<summary><b>How do I disconnect it?</b></summary>
+
+Revoke the application in your instance's settings under Development, which cuts
+access immediately, then remove the server from your client's config.
+
+</details>
+
 
 ## Questions
 
