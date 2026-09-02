@@ -70,6 +70,15 @@ an authenticating reverse proxy.
 Do not expose it directly. It holds a live credential for your account, and an
 open endpoint hands it to anyone who finds it.
 
+## Good-faith research
+
+Look at whatever you like in this repository. When testing, please do not access,
+change or delete data that is not yours, and do not disrupt a service other
+people depend on. If a test could affect anyone else, stop and send a private
+report first.
+
+Research done in that spirit is welcome, and nothing here is a trap.
+
 ## Supported versions
 
 The latest published version gets fixes. Given the size of this project, older
