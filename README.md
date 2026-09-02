@@ -43,16 +43,17 @@ Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
 | 2 | [Install](#2-install) | Every client, copy and paste |
 | 3 | [Connect your account](#3-connect-your-account) | One command, and what it does |
 | 4 | [Several accounts](#4-several-accounts) | Personal and project, different servers |
-| 5 | [Tools](#5-tools) | All 76, with arguments |
-| 6 | [Writing safely](#6-writing-safely) | Why posting asks twice |
-| 7 | [Writing statuses](#7-writing-statuses) | Limits, media, warnings, editing |
-| 8 | [Reading statuses](#8-reading-statuses) | The output format, and why |
-| 9 | [What makes Mastodon different](#9-what-makes-mastodon-different) | Federation, in practice |
-| 10 | [How it works](#10-how-it-works) | Architecture |
-| 11 | [Your data](#11-your-data) | What is stored and where |
-| 12 | [Risks](#12-risks) | Read this before you install |
-| 13 | [Troubleshooting](#13-troubleshooting) | When something breaks |
-| 14 | [FAQ](#14-faq-) | Including what an MCP server is |
+| 5 | [What it costs to have connected](#5-what-it-costs-to-have-connected) | Tokens per turn, and how to spend less |
+| 6 | [Tools](#6-tools) | All 76, with arguments |
+| 7 | [Writing safely](#7-writing-safely) | Why posting asks twice |
+| 8 | [Writing statuses](#8-writing-statuses) | Limits, media, warnings, editing |
+| 9 | [Reading statuses](#9-reading-statuses) | The output format, and why |
+| 10 | [What makes Mastodon different](#10-what-makes-mastodon-different) | Federation, in practice |
+| 11 | [How it works](#11-how-it-works) | Architecture |
+| 12 | [Your data](#12-your-data) | What is stored and where |
+| 13 | [Risks](#13-risks) | Read this before you install |
+| 14 | [Troubleshooting](#14-troubleshooting) | When something breaks |
+| 15 | [FAQ](#15-faq-) | Including what an MCP server is |
 
 ## 1. What you can ask it
 
@@ -74,11 +75,6 @@ The second one is the point. Mastodon lets you edit a published post and keeps a
 The long version, every step with what to do when one fails, is in [references/setup.md](references/setup.md).
 
 Node 20 or newer. Nothing else.
-
-> Not released to npm yet. The `npx` commands below work once `v1.0.0` is
-> published. Until then, install from source with
-> [section 14](#14-build-from-source) and point your client at
-> `node /path/to/mastodon-mcp/dist/index.js`.
 
 ### Claude Code
 
@@ -333,7 +329,29 @@ export MASTODON_ACCOUNTS='[
 
 `handle` is optional; it is only used for matching, and `whoami` will tell you the real one.
 
-## 5. Tools
+## 5. What it costs to have connected
+
+Every MCP server sends its whole tool list to the model on **every turn**,
+whether you mention it or not. Measured on this one:
+
+| | Sent per turn |
+|---|---|
+| 76 tool definitions, plus the server instructions | **~19,800 tokens** |
+
+That is the price of it being connected at all, before you ask anything. It is
+not unusual, and almost nobody publishes it.
+
+Two ways to spend less.
+
+**Turn it off when you are not using it.** In Claude Code that is
+`@mastodon` to toggle, and every client has an equivalent.
+
+**Or reach for a shell instead.** A command is not in the context window, so it
+costs nothing on the turns you do not use it. It is not free either: an agent
+still needs the skill file, roughly 1,400 tokens, but only once the subject
+comes up rather than on every turn regardless.
+
+## 6. Tools
 
 76 tools. Every one that acts as you takes an optional `account`; every listing takes `limit` and pages automatically past Mastodon's 40-per-request ceiling.
 
@@ -444,7 +462,7 @@ Three resources: `mastodon://accounts`, `mastodon://concepts`, `mastodon://outpu
 
 Three prompts: **catch-up**, **draft-thread**, **find-my-people**.
 
-## 6. Writing safely
+## 7. Writing safely
 
 A status is public the instant it lands, and federation means deleting it does not pull it back off the instances that already have it.
 
@@ -470,7 +488,7 @@ The audit log is one JSON line per attempted write, allowed and blocked alike, w
 
 Everything from a timeline, a search, a notification or a conversation is text other people wrote, and on an open federated network literally anyone can put text in front of you. The server tells the model to treat all of it as data. Do not rely on that alone: `MASTODON_READ_ONLY=1` for an agent working through someone else's content is the real defence.
 
-## 7. Writing statuses
+## 8. Writing statuses
 
 ### The character limit is not 500
 
@@ -523,7 +541,7 @@ Mastodon keeps a public revision history and the post keeps its boosts, replies 
 
 Call `get_status_source` first. The rendered content is HTML with links rewritten; editing that back would mangle every link in the post.
 
-## 8. Reading statuses
+## 9. Reading statuses
 
 Timelines, threads and search results come back as tagged text rather than raw API JSON. Measured on five real trending statuses from mastodon.social: 3,815 characters instead of 26,439, about 950 tokens instead of 6,600.
 
@@ -551,7 +569,7 @@ Timelines, threads and search results come back as tagged text rather than raw A
 - Mentions are rebuilt into full `@user@instance` handles. The raw markup carries only `@alice`, so a local alice and a remote alice are otherwise indistinguishable.
 - `next_max_id` continues the listing.
 
-## 9. What makes Mastodon different
+## 10. What makes Mastodon different
 
 Worth knowing before you point an agent at it.
 
@@ -567,7 +585,7 @@ Worth knowing before you point an agent at it.
 
 **Not everything is Mastodon.** Pleroma, Akkoma, GoToSocial and others speak the same API. `get_instance_info` reports the software, and `doctor` warns you when features like editing or trends may be missing.
 
-## 10. How it works
+## 11. How it works
 
 ```
 src/
@@ -605,7 +623,7 @@ Two dependencies: the MCP SDK and zod. No Mastodon client library: the API is pl
 
 **Rate limits.** Mastodon sends real `X-RateLimit-Remaining` and an ISO `X-RateLimit-Reset`, which is more than most APIs give you. Retries wait for the actual reset rather than guessing.
 
-## 11. Your data
+## 12. Your data
 
 Nothing is uploaded anywhere but your instance.
 
@@ -618,7 +636,7 @@ Nothing is uploaded anywhere but your instance.
 
 No telemetry, no analytics, no phone-home. The only hosts contacted are the instances you configured, plus whatever URL you hand to `media[].url`.
 
-## 12. Risks
+## 13. Risks
 
 - **An access token reaches your whole account.** It can post, delete, follow and block as you. Revoke it at `https://your-instance/oauth/authorized_applications`.
 - **Posting is public and federated.** Deleting does not pull a status back off the instances that already have it.
@@ -630,7 +648,7 @@ No telemetry, no analytics, no phone-home. The only hosts contacted are the inst
 
 If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gives you 39 tools that cannot change anything.
 
-## 13. Troubleshooting
+## 14. Troubleshooting
 
 **`mastodon-mcp doctor`** first. It names the failing step and the fix.
 
@@ -644,7 +662,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 | `translate_status` 404s | The instance has no translation backend configured |
 | "Status is N characters" | Check `get_instance_info`; the limit is per instance |
 | Media upload times out | Large video. The id stays valid; retry the post with `media_ids` |
-| "will not run without confirm: true" | Working as intended. See [section 6](#6-writing-safely) |
+| "will not run without confirm: true" | Working as intended. See [section 6](#7-writing-safely) |
 | Edits, polls or trends missing | Not a Mastodon server. `get_instance_info` reports the software |
 
 ## Environment variables
@@ -671,7 +689,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 
 See [CHANGELOG.md](CHANGELOG.md).
 
-## 14. FAQ ❓
+## 15. FAQ ❓
 
 <details>
 <summary><b>What is an MCP server?</b></summary>
