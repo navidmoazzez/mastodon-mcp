@@ -18,22 +18,7 @@ Instance limits are read from the instance, so character counts and poll options
 
 Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp).
 
-```
-You: anything in my mentions that actually needs an answer?
-
-Claude: 14 notifications since you last read. 4 mentions, the rest are boosts.
-
-  Needs you:
-  1. @sam@hachyderm.io asked which instance you'd pick for a small team.
-     Real question, 2 replies already, both wrong about storage costs.
-  2. @lena@fosstodon.org found the typo in Tuesday's post. It's in the
-     third paragraph. You can fix it in place, the post has 41 boosts.
-
-  Doesn't:
-  3. Two "great post!" replies.
-
-  Want me to draft the reply to Sam, or fix the typo first?
-```
+<img src="https://cdn.navid.media/repos/mastodon-mcp.gif?v=1" alt="Claude Code using the Mastodon MCP server" width="520">
 
 ## Contents
 
