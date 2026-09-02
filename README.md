@@ -667,7 +667,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 
 ## Versions
 
-See [VERSIONS.md](VERSIONS.md).
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## 14. FAQ ❓
 

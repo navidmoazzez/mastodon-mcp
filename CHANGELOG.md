@@ -1,4 +1,4 @@
-# Mastodon MCP Versions
+# Mastodon MCP changelog
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|
