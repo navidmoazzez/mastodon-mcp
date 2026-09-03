@@ -10,7 +10,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
-import { flagsFor, parseArgs, isCliCommand } from "../src/cli.js";
+import { EXIT, exitCodeFor, flagsFor, parseArgs, isCliCommand } from "../src/cli.js";
 import { ALL_TOOLS } from "../src/tools/index.js";
 
 describe("flagsFor", () => {
@@ -38,8 +38,11 @@ describe("flagsFor", () => {
   });
 
   it("exposes an enum's values as choices", () => {
-    const flags = flagsFor({ reply_control: z.enum(["everyone", "nobody"]).optional() });
-    expect(flags[0]).toMatchObject({ kind: "enum", choices: ["everyone", "nobody"] });
+    const flags = flagsFor({ visibility: z.enum(["public", "unlisted", "private", "direct"]).optional() });
+    expect(flags[0]).toMatchObject({
+      kind: "enum",
+      choices: ["public", "unlisted", "private", "direct"],
+    });
   });
 
   it("marks a scalar array repeatable and an object array json", () => {
@@ -50,6 +53,51 @@ describe("flagsFor", () => {
     expect(flags.find((f) => f.key === "langs")).toMatchObject({ kind: "string", repeatable: true });
     expect(flags.find((f) => f.key === "images")).toMatchObject({ kind: "json", repeatable: true });
   });
+
+  /**
+   * `--types mention` used to be rejected in favour of `--types '"mention"'`,
+   * because an enum inside an array fell through to the JSON branch. An enum
+   * value is a word you type, so it belongs with the scalars.
+   */
+  it("treats an array of enums as a repeatable scalar, not JSON", () => {
+    const flags = flagsFor({ types: z.array(z.enum(["mention", "favourite"])).optional() });
+    expect(flags[0]).toMatchObject({ kind: "string", repeatable: true });
+    expect(parseArgs(["--types", "mention"], flags)).toEqual({ types: ["mention"] });
+  });
+});
+
+describe("exitCodeFor", () => {
+  /**
+   * "No Mastodon account configured..." names a token, so matching auth first
+   * sent someone who had configured nothing looking for an expired credential.
+   */
+  it("calls an unconfigured server config, not auth", () => {
+    const message =
+      "No Mastodon account configured. Run `mastodon-mcp login <your-instance>` to register an app and sign in, or set MASTODON_URL and MASTODON_ACCESS_TOKEN.";
+    expect(exitCodeFor(new Error(message))).toBe(EXIT.config);
+  });
+
+  it("still calls a real 401 auth", () => {
+    expect(exitCodeFor({ status: 401, message: "the instance rejected the access token" })).toBe(
+      EXIT.auth,
+    );
+  });
+
+  /** A write stopped for want of --confirm is the caller's to fix, not a fault. */
+  it("calls a refused write usage", () => {
+    expect(
+      exitCodeFor(new Error("post_status is public or irreversible, so it will not run without --confirm.")),
+    ).toBe(EXIT.usage);
+    expect(
+      exitCodeFor(new Error("post_status is unavailable: this server is running with MASTODON_READ_ONLY=1.")),
+    ).toBe(EXIT.usage);
+  });
+
+  it("keeps rate limiting and not-found distinct", () => {
+    expect(exitCodeFor({ status: 429 })).toBe(EXIT.rateLimited);
+    expect(exitCodeFor({ status: 404 })).toBe(EXIT.notFound);
+    expect(exitCodeFor({ status: 503 })).toBe(EXIT.api);
+  });
 });
 
 describe("parseArgs", () => {
@@ -59,7 +107,7 @@ describe("parseArgs", () => {
     confirm: z.boolean().optional(),
     langs: z.array(z.string()).optional(),
     link: z.object({ uri: z.string() }).optional(),
-    reply_control: z.enum(["everyone", "nobody"]).optional(),
+    visibility: z.enum(["public", "unlisted", "private", "direct"]).optional(),
   });
 
   it("accepts --flag value and --flag=value alike", () => {
@@ -68,7 +116,7 @@ describe("parseArgs", () => {
   });
 
   it("accepts the underscore spelling of a flag", () => {
-    expect(parseArgs(["--reply_control", "nobody"], flags)).toEqual({ reply_control: "nobody" });
+    expect(parseArgs(["--visibility", "unlisted"], flags)).toEqual({ visibility: "unlisted" });
   });
 
   it("treats a boolean as a bare switch", () => {
@@ -93,7 +141,7 @@ describe("parseArgs", () => {
   });
 
   it("checks an enum against its choices", () => {
-    expect(() => parseArgs(["--reply-control", "friends"], flags)).toThrow(/expects one of/);
+    expect(() => parseArgs(["--visibility", "friends"], flags)).toThrow(/expects one of/);
   });
 
   it("fills the first required flag from a bare argument", () => {

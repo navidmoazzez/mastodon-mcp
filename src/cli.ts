@@ -28,9 +28,9 @@ import { MastodonError } from "./api/errors.js";
 type FlagKind = "string" | "number" | "boolean" | "enum" | "json";
 
 type Flag = {
-  /** The schema key, e.g. `reply_control`. */
+  /** The schema key, e.g. `spoiler_text`. */
   key: string;
-  /** The long flag, e.g. `--reply-control`. */
+  /** The long flag, e.g. `--spoiler-text`. */
   flag: string;
   kind: FlagKind;
   required: boolean;
