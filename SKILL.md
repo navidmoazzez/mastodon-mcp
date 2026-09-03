@@ -103,7 +103,8 @@ Use it for "what happened today". `next_max_id` continues a listing.
 | Code | Meaning |
 |---|---|
 | 0 | Success |
-| 2 | Usage error, wrong or missing arguments |
+| 1 | Unknown command. Run `mastodon-cli` to list them |
+| 2 | Usage error, wrong or missing arguments, or a write refused for want of `--confirm` |
 | 3 | Not found, which on a federated network can mean "not here yet" |
 | 4 | Authentication required, usually a revoked or wrong-instance token |
 | 5 | API error upstream, often one instance having a bad day |

@@ -1,14 +1,84 @@
-# Mastodon MCP changelog
+# Mastodon MCP Server & CLI changelog
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|
-| mastodon-mcp | 1.0.0 | 2026-08-31 |
+| mastodon-mcp-cli | 1.1.0 | 2026-09-04 |
+
+---
+
+## 1.1.0
+
+A second surface, and a new name to match it.
+
+### `mastodon-cli`
+
+Every one of the 76 tools is now a shell command under the same name with
+dashes, generated from the same `ALL_TOOLS` array the MCP server registers.
+Flags are derived from each tool's Zod schema, so a tool added tomorrow is a
+command tomorrow and the two surfaces cannot drift.
+
+```bash
+mastodon-cli                                # every command, one line each
+mastodon-cli get-home-timeline --limit 50
+mastodon-cli post-status --status "..." --confirm
+mastodon-cli list-accounts --json | jq -r '.accounts[].handle'
+```
+
+`--json`, `--compact` and `--agent` control the output; `--select a,b.c` keeps
+only the fields you asked for, which is what makes a long timeline affordable.
+`--confirm` is the shell spelling of the `confirm: true` the MCP surface takes,
+enforced by the same `WriteGuard`. Exit codes are 0, 2 usage or a refused write,
+3 not found, 4 auth, 5 API, 7 rate limited, 10 nothing configured, so a script
+branches on a number instead of parsing prose.
+
+Four things the first cut of the adapter got wrong, all fixed here:
+
+- **Nothing configured exited 4, not 10.** The "no account configured" message
+  mentions a token, and the auth pattern matched it first, sending someone who
+  had configured nothing off to look for an expired credential. Config is now
+  tested before auth, and only when there is no HTTP status, so a real 401 still
+  exits 4.
+- **A refused write exited 5.** A write that stops for want of `--confirm` is
+  the caller's to fix by re-running, not an upstream fault. It exits 2.
+- **An enum inside an array demanded JSON.** `--types mention` was rejected in
+  favour of `--types '"mention"'`. Enum elements are scalars now.
+- **`doctor` and `login` were rejected as unknown commands.** They belong to the
+  entry point rather than the tool list, and they are the first things typed
+  when nothing works yet. An entry-command set makes them reachable from the CLI
+  binary.
+
+### Renamed to `mastodon-mcp-cli`
+
+The repo and the package are `mastodon-mcp-cli`, because the package is no
+longer only an MCP server. The binaries are unchanged: `mastodon-mcp` is the
+server, `mastodon-cli` is the shell surface, and `~/.mastodon-mcp/accounts.json`
+stays where it is so an existing login keeps working.
+
+`@thenavidm/mastodon-mcp` is deprecated and points at the new name.
+
+Every GitHub link also moved from the old account to `thenavidm`. npm serves
+whatever was in the published tarball, so fixing GitHub did not fix the package
+page; this release is what corrects it.
+
+### A Claude Desktop extension
+
+`desktop-extension/` builds a `.mcpb` that installs on a double click, with the
+instance URL, the access token and a read-only switch as `user_config` fields.
+It vendors its dependencies, so it asks for nothing to be present first.
+
+### Smaller
+
+`VERSION` is read from `package.json` instead of being a second copy in
+`server.ts`, which had already drifted: the extension bundle reported 1.0.0
+while the package said otherwise. CI now compares the handshake's tool count
+against `ALL_TOOLS.length` rather than a number typed into the workflow, so
+adding a tool cannot leave a stale literal behind.
 
 ---
 
 ## 1.0.0
 
-First release. TypeScript, 76 tools, 50 tests.
+First release. TypeScript, 76 tools.
 
 ### Three things Mastodon does differently
 

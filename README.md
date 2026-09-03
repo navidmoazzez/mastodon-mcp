@@ -1,6 +1,6 @@
 <img src="https://cdn.navid.media/connectors/mastodon-icon.png" alt="Mastodon" width="88">
 
-# Mastodon MCP
+# Mastodon MCP Server & CLI
 
 [![npm](https://img.shields.io/npm/v/@thenavidm/mastodon-mcp-cli?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/mastodon-mcp-cli)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
@@ -8,27 +8,141 @@
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-thenavidm-0A66C2?logo=linkedin&logoColor=white)](https://linkedin.com/in/thenavidm)
 
-Mastodon MCP server for Claude Code and AI agents. Statuses, threads, boosts, timelines, search, lists, notifications and following, across any instance.
+Mastodon MCP server and CLI for Claude Code and AI agents. 76 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.
+
+One install gives you both surfaces, the same 76 tools under the same names,
+reading one array of tool definitions so neither can drift from the other.
 
 Setup is one command. Mastodon has no central developer portal, so this registers its own application on your instance and signs you in.
 
 Instance limits are read from the instance, so character counts and poll options are correct wherever you are.
 
-76 tools, across as many instances as you like.
-
-Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp).
+Built and maintained by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp-cli).
 
 <img src="https://cdn.navid.media/repos/mastodon-mcp.gif?v=1" alt="Claude Code using the Mastodon MCP server" width="520">
 
+## Two ways to use it
+
+### Command line
+
+`mastodon-cli` in your terminal, for scripting, cron, pipes, or just asking a
+quick question without opening anything:
+
+```bash
+mastodon-cli                                        # every command, one line each
+mastodon-cli get-home-timeline --limit 50           # your home timeline
+mastodon-cli get-account-statuses --acct alice@mastodon.social
+mastodon-cli search --q "model context protocol"
+mastodon-cli post-status --status "Shipped." --confirm
+mastodon-cli list-accounts --json | jq -r '.accounts[].handle'
+mastodon-cli <command> --help                       # what any command takes
+```
+
+`--confirm` is the shell spelling of the confirmation that posting, editing,
+deleting, blocking and reporting require. `--json` gives JSON, `--compact` puts
+it on one line, `--agent` is all of that plus no prompts and no colour, and
+errors are JSON on stderr whichever you pick.
+
+One caveat worth knowing before you script against it: **reading commands
+return the tagged text**, so `--json` hands you that text as a JSON string
+rather than fields you can filter. Writes and the account commands return real
+objects, which is why the example above pipes `list-accounts` and not a
+timeline. [Section 9](#9-reading-statuses) explains the format and why it is
+shaped that way.
+
+#### Exit codes
+
+A script branches on the number instead of parsing the message:
+
+| Code | Means |
+|---|---|
+| `0` | it worked |
+| `1` | an unknown command |
+| `2` | you typed it wrong, or a write was refused for want of `--confirm` |
+| `3` | not found |
+| `4` | the instance rejected the token |
+| `5` | the instance failed |
+| `7` | rate limited |
+| `10` | nothing is configured yet: run `mastodon-mcp login <your-instance>` |
+
+```bash
+if ! mastodon-cli post-status --status "$MSG" --confirm; then
+  case $? in
+    10) echo "not set up yet" >&2; exit 1 ;;
+    2)  echo "bad arguments, not retrying" >&2; exit 1 ;;
+    *)  echo "failed, will retry" >&2 ;;
+  esac
+fi
+```
+
+### MCP server, for AI agents
+
+`mastodon-mcp` is what Claude Code, Claude Desktop, Cursor and the rest launch.
+You never run it by hand:
+
+```bash
+npx -y @thenavidm/mastodon-mcp-cli login mastodon.social   # or your own instance
+claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp-cli
+```
+
+Then just ask: _"what did my timeline argue about while I was asleep?"_
+
+The `login` step stores the token, so the MCP entry needs no environment
+variables. Every other client is in [section 2](#2-install).
+
+### Which one
+
+| Where you are | What you can reach |
+|---|---|
+| An agent that can run shell commands, like Claude Code or Cursor | Both. The CLI is the cheaper one: it costs nothing until you type it |
+| claude.ai, the Claude Desktop chat tab, or a phone | The server only. There is no shell to run a command in |
+| A terminal, a script, cron or CI | The CLI only. There is no MCP client in a shell |
+
+They are the same program reading the same tool definitions, so anything one
+can do, the other can.
+
+## Features
+
+Every tool is both a command and an MCP tool, with the same name. The command
+is the tool name with dashes.
+
+| Capability | CLI command | MCP tool |
+|---|---|---|
+| Who am I | `mastodon-cli whoami` | `whoami` |
+| List connected accounts | `mastodon-cli list-accounts` | `list_accounts` |
+| The instance's own limits | `mastodon-cli get-instance-info` | `get_instance_info` |
+| Post | `mastodon-cli post-status` | `post_status` |
+| Post a thread | `mastodon-cli post-thread` | `post_thread` |
+| Edit a published status | `mastodon-cli edit-status` | `edit_status` |
+| Its edit history | `mastodon-cli get-status-history` | `get_status_history` |
+| Delete a status | `mastodon-cli delete-status` | `delete_status` |
+| Schedule, reschedule, cancel | `mastodon-cli list-scheduled-statuses` / `reschedule-status` / `cancel-scheduled-status` | `list_scheduled_statuses` / `reschedule_status` / `cancel_scheduled_status` |
+| Home, local and federated timelines | `mastodon-cli get-home-timeline` / `get-local-timeline` / `get-federated-timeline` | `get_home_timeline` / `get_local_timeline` / `get_federated_timeline` |
+| Hashtag and list timelines | `mastodon-cli get-hashtag-timeline` / `get-list-timeline` | `get_hashtag_timeline` / `get_list_timeline` |
+| Read a conversation | `mastodon-cli get-thread` | `get_thread` |
+| Search, trends, the directory | `mastodon-cli search` / `get-trends` / `browse-directory` | `search` / `get_trends` / `browse_directory` |
+| Favourite, boost, bookmark, pin | `mastodon-cli favourite-status` / `boost-status` / `bookmark-status` / `pin-status` | `favourite_status` / `boost_status` / `bookmark_status` / `pin_status` |
+| Vote in a poll | `mastodon-cli vote-poll` | `vote_poll` |
+| Follow, unfollow, mute, block | `mastodon-cli follow-account` / `unfollow-account` / `mute-account` / `block-account` | `follow_account` / `unfollow_account` / `mute_account` / `block_account` |
+| Block a whole instance | `mastodon-cli block-domain` | `block_domain` |
+| Follow hashtags | `mastodon-cli follow-hashtag` / `get-followed-hashtags` | `follow_hashtag` / `get_followed_hashtags` |
+| Notifications | `mastodon-cli get-notifications` / `mark-read` | `get_notifications` / `mark_read` |
+| Lists | `mastodon-cli get-lists` / `create-list` / `add-to-list` | `get_lists` / `create_list` / `add_to_list` |
+| Direct messages | `mastodon-cli get-conversations` | `get_conversations` |
+| Report an account or status | `mastodon-cli report` | `report` |
+| Check your setup | `mastodon-cli doctor` | not a tool |
+
+All 76 with their arguments are in [section 6](#6-tools).
+
 ## Contents
 
-| | Section | |
+| # | Section | What is in it |
 |---|---|---|
 | 1 | [What you can ask it](#1-what-you-can-ask-it) | Real prompts, not features |
-| 2 | [Install](#2-install) | Every client, copy and paste |
+| 2 | [Install](#2-install) | Every client and the shell, copy and paste |
 | 3 | [Connect your account](#3-connect-your-account) | One command, and what it does |
 | 4 | [Several accounts](#4-several-accounts) | Personal and project, different servers |
-| 5 | [What it costs to have connected](#5-what-it-costs-to-have-connected) | Tokens per turn, and how to spend less |
+| 5 | [What it costs to have connected](#5-what-it-costs-to-have-connected) | ~17,500 tokens a turn, or nothing |
 | 6 | [Tools](#6-tools) | All 76, with arguments |
 | 7 | [Writing safely](#7-writing-safely) | Why posting asks twice |
 | 8 | [Writing statuses](#8-writing-statuses) | Limits, media, warnings, editing |
@@ -70,6 +184,25 @@ claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp-cli
 
 The `login` step stores the token, so the MCP entry needs no environment variables.
 
+### The command line
+
+The same package installs both binaries, so the CLI needs no separate install:
+
+```bash
+npm i -g @thenavidm/mastodon-mcp-cli
+mastodon-cli --version
+mastodon-cli                       # every command, one line each
+```
+
+Or run it without installing anything:
+
+```bash
+npx -y -p @thenavidm/mastodon-mcp-cli mastodon-cli
+```
+
+`mastodon-mcp` is the server binary and `mastodon-cli` is the same tools as
+shell commands. Both come from the one package.
+
 ### Claude Desktop
 
 **1. Open the config file.**
@@ -78,7 +211,7 @@ In Claude Desktop, go to **Settings**, then **Developer**, then click **Edit Con
 
 If you would rather go straight there:
 
-| | |
+| Platform | Config file |
 |---|---|
 | macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
 | Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
@@ -119,7 +252,7 @@ Look for the tools icon in the message box and click it. You should see `mastodo
 
 If nothing appears, Claude Desktop's own log is the fastest way in:
 
-| | |
+| Platform | Log file |
 |---|---|
 | macOS | `~/Library/Logs/Claude/mcp-server-mastodon.log` |
 | Windows | `%APPDATA%\Claude\logs\mcp-server-mastodon.log` |
@@ -151,11 +284,11 @@ Zed, Cline, Continue and anything else that speaks MCP over stdio all work. They
 The store lives in `/data`, so mount a volume or pass the token directly:
 
 ```bash
-docker build -t mastodon-mcp .
+docker build -t mastodon-mcp-cli .
 docker run --rm -i \
   -e MASTODON_URL=https://mastodon.social \
   -e MASTODON_ACCESS_TOKEN=… \
-  mastodon-mcp
+  mastodon-mcp-cli
 ```
 
 ### Self-hosting over HTTP
@@ -316,25 +449,66 @@ export MASTODON_ACCOUNTS='[
 
 ## 5. What it costs to have connected
 
-Every MCP server sends its whole tool list to the model on **every turn**,
-whether you mention it or not. Measured on this one:
+Both surfaces carry the same 76 tools. They differ in when you pay for them.
 
-| | Sent per turn |
+| What you pay | MCP server | CLI |
+|---|---|---|
+| Loaded every turn | **~17,500 tokens** | nothing |
+| Loaded when Mastodon comes up | nothing more | ~2,400, once |
+| Works on claude.ai and mobile | yes | no, there is no shell there |
+| Works in a script, cron or CI | no | yes |
+| You invoke it by | asking in plain language | typing a command |
+
+An MCP server sends its whole tool list to the model on **every turn**, whether
+you mention Mastodon or not. That is the price of being connected at all,
+before you ask anything.
+
+Over twenty turns where Mastodon comes up once, that is roughly 350,000 tokens
+against 2,400. When the whole conversation is Mastodon, the gap closes and the
+server is the better experience, because you ask in plain language instead of
+remembering flags.
+
+### How that was measured
+
+Not estimated. A real handshake against the built server, tokenised:
+
+```bash
+printf '%s\n%s\n' \
+  '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"probe","version":"1"}}}' \
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+  | mastodon-mcp
+```
+
+The `tools/list` reply serialises to 77,135 characters, which is 17,096 tokens.
+The server instructions returned by `initialize` add 428. Counted with
+`gpt-tokenizer`, so treat it as the right order of magnitude rather than
+Claude's exact arithmetic.
+
+### Where the 17,500 goes
+
+Worth knowing, because it is mostly not something anyone can write away:
+
+| What the tokens are | Share |
 |---|---|
-| 76 tool definitions, plus the server instructions | **~19,800 tokens** |
+| JSON Schema structure: types, required lists, nesting | **59%** |
+| Argument descriptions | 29% |
+| Tool descriptions | 12% |
 
-That is the price of it being connected at all, before you ask anything. It is
-not unusual, and almost nobody publishes it.
+Ten thousand of those tokens are the protocol serialising every tool as JSON
+Schema. Any MCP server with this many tools pays the same. The 41% that is
+prose is what makes the tools usable without guessing.
 
-Two ways to spend less.
+### Spending less
 
-**Turn it off when you are not using it.** In Claude Code that is
+**Turn the server off when you are not using Mastodon.** In Claude Code that is
 `@mastodon` to toggle, and every client has an equivalent.
+`MASTODON_READ_ONLY=1` drops it to the 39 reading tools, measured at 8,667
+tokens by the same handshake.
 
-**Or reach for a shell instead.** A command is not in the context window, so it
-costs nothing on the turns you do not use it. It is not free either: an agent
-still needs the skill file, roughly 1,400 tokens, but only once the subject
-comes up rather than on every turn regardless.
+**Or install the CLI and skip the server.** All 76 tools stay reachable, the
+standing cost falls to nothing, and an agent pays for the skill file
+(2,354 tokens) only once the subject comes up rather than every turn
+regardless. You can connect the server later on the days it earns its place.
 
 ## 6. Tools
 
@@ -507,7 +681,7 @@ Both rules are implemented, so a link-heavy status is not refused for being over
 
 ### Visibility
 
-| | Who sees it |
+| Visibility | Who sees it |
 |---|---|
 | `public` | everyone, including the public timelines |
 | `unlisted` | everyone, but not in the public timelines |
@@ -612,7 +786,7 @@ Two dependencies: the MCP SDK and zod. No Mastodon client library: the API is pl
 
 Nothing is uploaded anywhere but your instance.
 
-| | Where |
+| What | Where |
 |---|---|
 | Access tokens | `~/.mastodon-mcp/accounts.json`, mode 0600, or your environment |
 | OAuth client secret | Used once during `login`, never stored |
@@ -647,7 +821,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 | `translate_status` 404s | The instance has no translation backend configured |
 | "Status is N characters" | Check `get_instance_info`; the limit is per instance |
 | Media upload times out | Large video. The id stays valid; retry the post with `media_ids` |
-| "will not run without confirm: true" | Working as intended. See [section 6](#7-writing-safely) |
+| "will not run without confirm: true" | Working as intended. See [section 7](#7-writing-safely) |
 | Edits, polls or trends missing | Not a Mastodon server. `get_instance_info` reports the software |
 
 ## Environment variables
@@ -810,7 +984,7 @@ Navid Moazzez is a leading AI business strategist, and the host of the AI Creato
 
 **Links**
 
-- Personal website: [navid.me](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp)
+- Personal website: [navid.me](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp-cli)
 - YouTube: [@thenavidm](https://youtube.com/@thenavidm?sub_confirmation=1) and [@thenavidai](https://youtube.com/@thenavidai?sub_confirmation=1)
 - X: [@thenavidm](https://x.com/thenavidm)
 - Instagram: [@thenavidm](https://instagram.com/thenavidm)
@@ -833,4 +1007,4 @@ Not affiliated with, endorsed by, or connected to Mastodon gGmbH.
 
 ---
 
-© 2026 [NM Media](https://navid.media?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp). Made with ❤️ by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp).
+© 2026 [NM Media](https://navid.media?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp-cli). Made with ❤️ by [Navid Moazzez](https://navid.me?utm_source=github&utm_medium=readme&utm_campaign=mastodon-mcp-cli).

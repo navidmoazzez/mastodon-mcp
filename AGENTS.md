@@ -1,4 +1,4 @@
-# Working on mastodon-mcp
+# Working on mastodon-mcp-cli
 
 For agents editing this repository. Users read the README. Driving the server is
 `SKILL.md`.
