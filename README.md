@@ -2,7 +2,7 @@
 
 # Mastodon MCP
 
-[![npm](https://img.shields.io/npm/v/@thenavidm/mastodon-mcp?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/mastodon-mcp)
+[![npm](https://img.shields.io/npm/v/@thenavidm/mastodon-mcp-cli?color=orange&label=npm)](https://www.npmjs.com/package/@thenavidm/mastodon-mcp-cli)
 [![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 [![YouTube](https://img.shields.io/badge/YouTube-@thenavidm-red?logo=youtube&logoColor=white)](https://youtube.com/@thenavidm?sub_confirmation=1)
 [![X](https://img.shields.io/badge/X-@thenavidm-black?logo=x)](https://x.com/thenavidm)
@@ -57,15 +57,15 @@ The second one is the point. Mastodon lets you edit a published post and keeps a
 
 ## 2. Install
 
-The long version, every step with what to do when one fails, is in [references/setup.md](references/setup.md).
+The long version, every step with what to do when one fails, is in [INSTALL.md](INSTALL.md).
 
 Node 20 or newer. Nothing else.
 
 ### Claude Code
 
 ```bash
-npx -y @thenavidm/mastodon-mcp login mastodon.social   # or your own instance
-claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp
+npx -y @thenavidm/mastodon-mcp-cli login mastodon.social   # or your own instance
+claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp-cli
 ```
 
 The `login` step stores the token, so the MCP entry needs no environment variables.
@@ -99,7 +99,7 @@ If the file is empty or does not exist, paste this whole thing in:
   "mcpServers": {
     "mastodon": {
       "command": "npx",
-      "args": ["-y", "@thenavidm/mastodon-mcp"]
+      "args": ["-y", "@thenavidm/mastodon-mcp-cli"]
     }
   }
 }
@@ -107,7 +107,7 @@ If the file is empty or does not exist, paste this whole thing in:
 
 If you already have other servers, add only the `"mastodon": {{ ... }}` part inside your existing `"mcpServers"`, and put a comma after the entry before it. The file has to stay valid JSON. A single missing comma or a trailing one stops every server from loading, not just this one.
 
-Run `npx -y @thenavidm/mastodon-mcp login <your-instance>` once before this, so the server has a session to use. [Section 3](#3-connect-your-account) covers it.
+Run `npx -y @thenavidm/mastodon-mcp-cli login <your-instance>` once before this, so the server has a session to use. [Section 3](#3-connect-your-account) covers it.
 
 **3. Restart properly.**
 
@@ -192,15 +192,15 @@ Paste this into Claude Code, Cursor, or any agent with terminal access:
 Set up the Mastodon MCP server for me.
 
 1. Ask me which instance my account is on, e.g. mastodon.social. Do not guess.
-2. Run: npx -y @thenavidm/mastodon-mcp login <instance>
+2. Run: npx -y @thenavidm/mastodon-mcp-cli login <instance>
    It opens my browser and waits. Tell me to approve the request there, and
    wait for it to finish. It asks for read, write and follow; that is correct.
    If there is no browser available, re-run it with --oob and I will paste the
    code back to you.
 3. Register the server with my MCP client. For Claude Code that is:
-     claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp
+     claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp-cli
    No environment variables: step 2 already stored the token.
-4. Run: npx -y @thenavidm/mastodon-mcp doctor
+4. Run: npx -y @thenavidm/mastodon-mcp-cli doctor
    Show me the output. Pay attention to the line about scopes: if it says the
    account cannot post, the token is read-only and step 2 needs redoing.
 5. Tell me to restart the client. Do not post anything.
@@ -655,7 +655,10 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 | Variable | Default | What it does |
 |---|---|---|
 | `MASTODON_URL` | none | Your instance, e.g. https://mastodon.social |
+| `MASTODON_INSTANCE_URL` | none | Alias for `MASTODON_URL`, read when it is unset |
+| `MASTODON_API_BASE_URL` | none | Alias for `MASTODON_URL`, read when both above are unset |
 | `MASTODON_ACCESS_TOKEN` | none | An access token for it |
+| `MASTODON_HANDLE` | resolved on first use | Full handle for the single-variable account, e.g. `alice@mastodon.social` |
 | `MASTODON_ACCOUNTS` | none | JSON array, for several accounts across instances |
 | `MASTODON_DEFAULT_ACCOUNT` | first configured | Which handle acts when a tool names none |
 | `MASTODON_MCP_HOME` | `~/.mastodon-mcp` | Where the account store lives |
@@ -665,6 +668,7 @@ If any of that is more than you want to hand an agent, `MASTODON_READ_ONLY=1` gi
 | `MASTODON_REQUEST_TIMEOUT_MS` | `30000` | Per-request deadline |
 | `MASTODON_MIN_REQUEST_INTERVAL_MS` | `120` | Spacing between requests |
 | `MASTODON_MAX_RETRIES` | `3` | Retries on 429 and 5xx |
+| `MASTODON_USER_AGENT` | `mastodon-mcp` | User-Agent sent to the instance |
 | `MASTODON_LOGIN_PORT` | `33517` | Loopback port for the OAuth redirect |
 | `MASTODON_HTTP_PORT` | `8788` | For `--http` |
 | `MASTODON_HTTP_HOST` | `127.0.0.1` | For `--http` |
@@ -798,7 +802,7 @@ access immediately, then remove the server from your client's config.
 
 ## Questions
 
-Run into a problem or have a question? [Open an issue](https://github.com/navidmoazzez/mastodon-mcp/issues) and I will help.
+Run into a problem or have a question? [Open an issue](https://github.com/thenavidm/mastodon-mcp-cli/issues) and I will help.
 
 ## About the author
 

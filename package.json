@@ -1,11 +1,12 @@
 {
-  "name": "@thenavidm/mastodon-mcp",
-  "version": "1.0.0",
-  "description": "Mastodon MCP server for Claude Code and AI agents. 60 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.",
+  "name": "@thenavidm/mastodon-mcp-cli",
+  "version": "1.1.0",
+  "description": "Mastodon MCP server and CLI for Claude Code and AI agents. 76 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "mastodon-mcp": "dist/index.js"
+    "mastodon-mcp": "dist/index.js",
+    "mastodon-cli": "dist/index.js"
   },
   "engines": {
     "node": ">=20"
@@ -17,11 +18,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "build:mcpb": "bash desktop-extension/build.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.0",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.24.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
@@ -33,10 +36,10 @@
   "homepage": "https://navid.me",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/navidmoazzez/mastodon-mcp.git"
+    "url": "git+https://github.com/thenavidm/mastodon-mcp-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/navidmoazzez/mastodon-mcp/issues"
+    "url": "https://github.com/thenavidm/mastodon-mcp-cli/issues"
   },
   "keywords": [
     "mcp",

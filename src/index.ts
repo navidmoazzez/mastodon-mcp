@@ -7,12 +7,14 @@
  * `mastodon-mcp login <host>`    register an app on an instance and sign in
  * `mastodon-mcp logout <who>`    remove a stored account
  * `mastodon-mcp doctor`          check the setup and say what is wrong
+ * `mastodon-cli`                 the same tools as shell commands
  */
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { buildServer, VERSION } from "./server.js";
 import { loadConfig } from "./config.js";
 import { httpOptionsFromEnv, startHttpServer } from "./transport/http.js";
+import { runCli, isCliCommand } from "./cli.js";
 
 const HELP = `mastodon-mcp ${VERSION}
 
@@ -39,7 +41,9 @@ Credentials, in priority order:
   MASTODON_ACCOUNTS         JSON array, for several accounts across instances:
                             [{"instance":"https://mastodon.social","access_token":"…"}]
   MASTODON_URL              your instance, e.g. https://mastodon.social
+                            MASTODON_INSTANCE_URL and MASTODON_API_BASE_URL are aliases
   MASTODON_ACCESS_TOKEN     an access token for it
+  MASTODON_HANDLE           its full handle, resolved on first use when absent
   ~/.mastodon-mcp/accounts.json   whatever \`mastodon-mcp login\` stored
 
 Options:
@@ -48,15 +52,61 @@ Options:
   MASTODON_ALLOW_DESTRUCTIVE=0       keep writes, block posting and deleting
   MASTODON_REQUEST_TIMEOUT_MS        per-request deadline, default 30000
   MASTODON_MIN_REQUEST_INTERVAL_MS   spacing between requests, default 120
+  MASTODON_MAX_RETRIES               retries on 429 and 5xx, default 3
+  MASTODON_USER_AGENT                override the User-Agent sent to the instance
   MASTODON_AUDIT_LOG                 append-only log of every attempted write
   MASTODON_HTTP_PORT / _HOST / _TOKEN  for --http
 
-https://github.com/navidmoazzez/mastodon-mcp
+https://github.com/thenavidm/mastodon-mcp-cli
 `;
+
+/**
+ * One entry point, two programs. `mastodon-mcp` is the server and must stay
+ * silent on stdout; `mastodon-cli` is the one a person types. Running the CLI
+ * binary with no arguments is someone asking what they can type, so it lists
+ * the commands rather than hanging on a transport that will never speak.
+ */
+function invokedAsCli(): boolean {
+  const name = (process.argv[1] ?? "").split("/").pop() ?? "";
+  return name.startsWith("mastodon-cli");
+}
 
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const command = argv[0];
+
+  if (invokedAsCli() && argv.length === 0) {
+    process.exitCode = await runCli(["tools"]);
+    return;
+  }
+
+  // Checked before --help and --version so `<tool> --help` reaches the tool.
+  // A bare `--help` starts with a dash, so it falls through to the block below.
+  if (isCliCommand(argv)) {
+    process.exitCode = await runCli(argv);
+    return;
+  }
+
+  // An unknown word used to fall through and start the server, which then sat
+  // waiting on stdin: a typo looked like a hang, and scripts saw exit code 0.
+  // `doctor`, `login` and `logout` belong to the entry point rather than the
+  // tool list, and they are the first things someone types when nothing works
+  // yet. Rejecting them as unknown commands sent people to the server binary
+  // to fix the CLI.
+  const ENTRY_COMMANDS = new Set(["doctor", "login", "logout", "help"]);
+
+  if (
+    invokedAsCli() &&
+    command !== undefined &&
+    !command.startsWith("-") &&
+    !ENTRY_COMMANDS.has(command)
+  ) {
+    process.stderr.write(
+      `${JSON.stringify({ error: `Unknown command '${command}'. Run \`mastodon-cli\` to list them.` }, null, 2)}\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   if (argv.includes("--help") || argv.includes("-h") || command === "help") {
     process.stdout.write(HELP);

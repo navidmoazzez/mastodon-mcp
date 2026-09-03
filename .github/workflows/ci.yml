@@ -99,4 +99,4 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t mastodon-mcp:ci .
+      - run: docker build -t mastodon-mcp-cli:ci .

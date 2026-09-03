@@ -1,4 +1,4 @@
-# Mastodon MCP setup
+# Install
 
 Mastodon has a real, documented, public REST API. There is **no central developer
 portal**: every instance is its own OAuth provider, so an application has to be
@@ -14,8 +14,8 @@ Node 20 or newer. Nothing else.
 ## Install and sign in
 
 ```bash
-npx -y @thenavidm/mastodon-mcp login mastodon.social
-claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp
+npx -y @thenavidm/mastodon-mcp-cli login mastodon.social
+claude mcp add mastodon -- npx -y @thenavidm/mastodon-mcp-cli
 ```
 
 Or in any client's MCP config, after running `login` once:
@@ -25,7 +25,7 @@ Or in any client's MCP config, after running `login` once:
   "mcpServers": {
     "mastodon": {
       "command": "npx",
-      "args": ["-y", "@thenavidm/mastodon-mcp"]
+      "args": ["-y", "@thenavidm/mastodon-mcp-cli"]
     }
   }
 }
