@@ -6,6 +6,7 @@
  * call, and prompts, so the workflows this server is good at are one click.
  */
 
+import { createRequire } from "node:module";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { MastodonClient } from "./api/client.js";
 import { loadConfig, type Config } from "./config.js";
@@ -13,7 +14,15 @@ import { WriteGuard } from "./safety.js";
 import { ALL_TOOLS } from "./tools/index.js";
 import { makeContext, register } from "./tools/kit.js";
 
-export const VERSION = "1.0.0";
+/**
+ * Read from package.json rather than repeated here.
+ *
+ * A hardcoded copy silently drifts: the number a release publishes to npm and
+ * the number `--version` answers stop agreeing the first time one is bumped
+ * without the other.
+ */
+const require = createRequire(import.meta.url);
+export const VERSION: string = (require("../package.json") as { version: string }).version;
 
 export const INSTRUCTIONS = `Tools for Mastodon and the wider fediverse over the standard REST API: posting, editing, threads, five different timelines, search, hashtags, lists, notifications and the social graph.
 
