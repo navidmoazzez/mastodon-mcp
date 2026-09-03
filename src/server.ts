@@ -139,8 +139,9 @@ home timeline, which is how most people build a feed.
 Posts can be edited, and the edit history is public. The post keeps its boosts, replies
 and favourites. This is unusual and it means delete-and-repost is almost never right.
 
-## Boosts, not quotes
-Mastodon has boosts (like a retweet) but no native quote post. To comment on something,
+## Boosts, and quotes this server does not post
+Mastodon gained native quote posts in 4.5.0, API version 7, but this server does
+not expose them: post_status has no quote parameter. To comment on something,
 post a status containing its URL.
 
 ## Moderation

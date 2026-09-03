@@ -2,7 +2,23 @@
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|
-| mastodon-mcp-cli | 1.1.1 | 2026-09-04 |
+| mastodon-mcp-cli | 1.1.2 | 2026-09-04 |
+
+---
+
+## 1.1.2
+
+Mastodon has quote posts, and this said it did not.
+
+The server instructions, the `boost_status` description, SKILL.md and the README
+all stated flatly that Mastodon has no native quote post. It gained them in
+4.5.0, `mastodon` API version 7: `quoted_status_id` and `quote_approval_policy`
+on `POST /api/v1/statuses`, plus `GET /api/v1/statuses/:id/quotes`.
+mastodon.social reports API version 11, so it has had them for a while.
+
+`post_status` still takes no quote parameter, so the advice is unchanged: post a
+status containing the URL and boost the original. What changed is that this no
+longer blames the platform for a gap that is this server's.
 
 ---
 

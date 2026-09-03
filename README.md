@@ -486,7 +486,7 @@ printf '%s\n%s\n' \
   | mastodon-mcp
 ```
 
-The `tools/list` reply serialises to 77,135 characters, which is 17,096 tokens.
+The `tools/list` reply serialises to 77,183 characters, which is 17,110 tokens.
 The server instructions returned by `initialize` add 428. Counted with
 `gpt-tokenizer`, so treat it as the right order of magnitude rather than
 Claude's exact arithmetic.
@@ -514,7 +514,7 @@ tokens by the same handshake.
 
 **Or install the CLI and skip the server.** All 76 tools stay reachable, the
 standing cost falls to nothing, and an agent pays for the skill file
-(2,354 tokens) only once the subject comes up rather than every turn
+(2,423 tokens) only once the subject comes up rather than every turn
 regardless. You can connect the server later on the days it earns its place.
 
 ## 6. Tools
@@ -561,7 +561,7 @@ regardless. You can connect the server later on the days it earns its place.
 | `get_favourited_by` / `get_boosted_by` | `id`, `limit` |
 | `report` | `account_id`, `status_ids[]`, `comment`, `category`, `rule_ids[]`, `forward`, `confirm` |
 
-Every action has its inverse. Mastodon has no native quote post: to comment on something, post a status containing its URL.
+Every action has its inverse. Quoting is not here: Mastodon gained native quote posts in 4.5.0, but `post_status` does not take a quote, so to comment on something, post a status containing its URL.
 
 ### Timelines
 
@@ -747,7 +747,7 @@ Worth knowing before you point an agent at it.
 
 **No algorithm.** Timelines are chronological. Discovery is hashtags, trends, lists and the directory. **Following a hashtag** puts every public post carrying it into your home timeline, and it is how most people build a feed.
 
-**Boosts, not quotes.** There is no native quote post. To comment on something, post a status containing its URL.
+**Boosts, and quotes this does not post.** Mastodon added native quote posts in 4.5.0 (`mastodon` API version 7); this server has not caught up, so `post_status` takes no quote. To comment on something, post a status containing its URL.
 
 **Not everything is Mastodon.** Pleroma, Akkoma, GoToSocial and others speak the same API. `get_instance_info` reports the software, and `doctor` warns you when features like editing or trends may be missing.
 

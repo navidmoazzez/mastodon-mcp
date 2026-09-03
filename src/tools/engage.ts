@@ -13,7 +13,7 @@ import { accountArg, defineTool, type AnyToolSpec } from "./kit.js";
 /** The action/undo pairs, which are all the same shape. */
 const PAIRS = [
   ["favourite_status", "unfavourite_status", "favourite", "unfavourite", "Favourite a status.", "Remove your favourite from a status."],
-  ["boost_status", "unboost_status", "reblog", "unreblog", "Boost a status to your followers. To add a comment instead, post a status quoting its URL: Mastodon has no native quote post.", "Undo a boost."],
+  ["boost_status", "unboost_status", "reblog", "unreblog", "Boost a status to your followers. To add a comment instead, post a status containing its URL. Mastodon has native quote posts from 4.5.0, but this server does not post them.", "Undo a boost."],
   ["bookmark_status", "unbookmark_status", "bookmark", "unbookmark", "Bookmark a status. Bookmarks are private, unlike favourites, which the author can see.", "Remove a bookmark."],
   ["pin_status", "unpin_status", "pin", "unpin", "Pin one of your own statuses to the top of your profile.", "Unpin a status from your profile."],
   ["mute_conversation", "unmute_conversation", "mute", "unmute", "Stop being notified about replies to this thread, without leaving it. The tool nobody reaches for until a post goes unexpectedly wide.", "Start being notified about this thread again."],

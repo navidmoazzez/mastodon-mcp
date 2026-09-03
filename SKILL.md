@@ -161,8 +161,9 @@ output is worth mentioning before the user boosts something.
 (followers), `direct` (only those mentioned). A direct message is a status, not
 a separate inbox, and it is not encrypted.
 
-**No quote posts.** To comment on something, post a status containing its URL
-and boost the original.
+**This server does not post quotes.** Mastodon itself gained them in 4.5.0
+(`mastodon` API version 7), but `post-status` has no quote parameter, so to
+comment on something, post a status containing its URL and boost the original.
 
 **Discovery has no algorithm.** Timelines are chronological. Use `get-trends`,
 `get-hashtag-timeline`, `browse-directory` and lists. `follow-hashtag` puts a

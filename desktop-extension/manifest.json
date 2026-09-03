@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "mastodon",
   "display_name": "Mastodon",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Mastodon MCP server for Claude Code and AI agents. 76 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.",
   "long_description": "Connects Claude to Mastodon, on any instance.\n\nMastodon is federated, so an account is a token plus the instance that issued it. Paste your instance URL and an access token from that instance's Settings -> Development, and this connects. There is no central developer portal to visit.\n\nWrites are on. Anything public or irreversible - posting, editing, deleting, boosting, following, blocking - refuses to run until it is confirmed, and Read only hides every one of them.",
   "author": {

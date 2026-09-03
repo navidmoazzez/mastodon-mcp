@@ -1,6 +1,6 @@
 {
   "name": "@thenavidm/mastodon-mcp-cli",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Mastodon MCP server and CLI for Claude Code and AI agents. 76 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.",
   "type": "module",
   "main": "./dist/index.js",
