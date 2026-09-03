@@ -1,0 +1,55 @@
+{
+  "manifest_version": "0.2",
+  "name": "mastodon",
+  "display_name": "Mastodon",
+  "version": "1.1.0",
+  "description": "Mastodon MCP server for Claude Code and AI agents. 76 tools for posting, editing, threads, timelines, search, lists, notifications and following, across any instance.",
+  "long_description": "Connects Claude to Mastodon, on any instance.\n\nMastodon is federated, so an account is a token plus the instance that issued it. Paste your instance URL and an access token from that instance's Settings -> Development, and this connects. There is no central developer portal to visit.\n\nWrites are on. Anything public or irreversible - posting, editing, deleting, boosting, following, blocking - refuses to run until it is confirmed, and Read only hides every one of them.",
+  "author": { "name": "Navid Moazzez", "url": "https://navid.me" },
+  "repository": { "type": "git", "url": "https://github.com/thenavidm/mastodon-mcp-cli" },
+  "homepage": "https://github.com/thenavidm/mastodon-mcp-cli",
+  "documentation": "https://github.com/thenavidm/mastodon-mcp-cli#readme",
+  "support": "https://github.com/thenavidm/mastodon-mcp-cli/issues",
+  "license": "MIT",
+  "keywords": ["mastodon", "fediverse", "activitypub", "social", "mcp"],
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "MASTODON_URL": "${user_config.instance_url}",
+        "MASTODON_ACCESS_TOKEN": "${user_config.access_token}",
+        "MASTODON_READ_ONLY": "${user_config.read_only}"
+      }
+    }
+  },
+  "user_config": {
+    "instance_url": {
+      "type": "string",
+      "title": "Your instance",
+      "description": "The server your account lives on, for example https://mastodon.social. A token is only valid on the instance that issued it.",
+      "required": true
+    },
+    "access_token": {
+      "type": "string",
+      "title": "Access token",
+      "description": "From that instance's Settings -> Development -> New application. Give it the read and write scopes, then copy \"Your access token\".",
+      "sensitive": true,
+      "required": true
+    },
+    "read_only": {
+      "type": "boolean",
+      "title": "Read only",
+      "description": "Hide every tool that can post, edit, delete, boost, follow or block.",
+      "default": false,
+      "required": false
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=0.10.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "node": ">=20" }
+  }
+}
