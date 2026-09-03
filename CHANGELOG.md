@@ -2,7 +2,16 @@
 
 | Component | Version | Last Updated |
 |-----------|---------|--------------|
-| mastodon-mcp-cli | 1.1.0 | 2026-09-04 |
+| mastodon-mcp-cli | 1.1.1 | 2026-09-04 |
+
+---
+
+## 1.1.1
+
+Docs only. The 1.1.0 tarball went to npm before the README learned that the
+desktop extension is attached to the release, and before INSTALL.md covered the
+CLI at all. npm serves whatever was in the published tarball, so the package
+page needed a release of its own to catch up.
 
 ---
 

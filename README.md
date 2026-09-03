@@ -205,9 +205,9 @@ shell commands. Both come from the one package.
 
 ### Claude Desktop
 
-The quickest route is the extension: download
-[`mastodon-1.1.0.mcpb`](https://github.com/thenavidm/mastodon-mcp-cli/releases/latest)
-from the latest release and double click it. It carries its own dependencies,
+The quickest route is the extension: download the
+[`.mcpb` from the latest release](https://github.com/thenavidm/mastodon-mcp-cli/releases/latest)
+and double click it. It carries its own dependencies,
 and asks for your instance URL and an access token in the install dialog. The
 rest of this section is the manual route, if you would rather edit the config
 yourself.
