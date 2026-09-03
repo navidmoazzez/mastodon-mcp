@@ -31,6 +31,27 @@ Or in any client's MCP config, after running `login` once:
 }
 ```
 
+## The command line
+
+The same package installs both binaries, so nothing extra is needed for the
+shell surface:
+
+```bash
+npm i -g @thenavidm/mastodon-mcp-cli
+mastodon-cli --version
+mastodon-cli                 # every command, one line each, writes marked
+```
+
+Or without installing anything:
+
+```bash
+npx -y -p @thenavidm/mastodon-mcp-cli mastodon-cli
+```
+
+`mastodon-mcp` is the server an MCP client launches; `mastodon-cli` is the same
+76 tools as shell commands. They share the account store, so `login` once and
+both work.
+
 ## What `login` does
 
 1. Registers `mastodon-mcp` as an application on your instance
