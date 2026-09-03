@@ -205,6 +205,13 @@ shell commands. Both come from the one package.
 
 ### Claude Desktop
 
+The quickest route is the extension: download
+[`mastodon-1.1.0.mcpb`](https://github.com/thenavidm/mastodon-mcp-cli/releases/latest)
+from the latest release and double click it. It carries its own dependencies,
+and asks for your instance URL and an access token in the install dialog. The
+rest of this section is the manual route, if you would rather edit the config
+yourself.
+
 **1. Open the config file.**
 
 In Claude Desktop, go to **Settings**, then **Developer**, then click **Edit Config**. That reveals `claude_desktop_config.json` in your file manager. Open it in any text editor.

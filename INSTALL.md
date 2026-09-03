@@ -52,6 +52,15 @@ npx -y -p @thenavidm/mastodon-mcp-cli mastodon-cli
 76 tools as shell commands. They share the account store, so `login` once and
 both work.
 
+## Claude Desktop, without a terminal
+
+Download the `.mcpb` from the
+[latest release](https://github.com/thenavidm/mastodon-mcp-cli/releases/latest)
+and double click it. It vendors its dependencies, so nothing has to be
+installed first, and it asks for your instance URL and an access token in the
+install dialog. Make that token at your instance's Settings, Development, New
+application, with the **read** and **write** scopes.
+
 ## What `login` does
 
 1. Registers `mastodon-mcp` as an application on your instance
